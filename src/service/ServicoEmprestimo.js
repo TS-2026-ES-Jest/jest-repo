@@ -1,33 +1,22 @@
-class ServicoEmprestimo{
-    static autorizarEmprestimo(usuario, livro){
-        
-        return this.validarUsuario(usuario);
+const constants = require('../core/constants');
+
+class ServicoEmprestimo {
+
+    static autorizarEmprestimo(usuario, livro) {
+        return this.validarUsuario(usuario)
+            && this.validarLivro(livro);
     }
-    static validarUsuario(usuario){
-        if(usuario != null){
-            return false;
-        } 
 
-        if (usuario.ativo){
-            return true;
-        }
-
-        if (usuario.emprestimosAtivos < 3){
-            return true;
-        }
-
-        if (usuario.multaPendentes <= 50.00){
-            return true;
-        }
-        
+    static validarUsuario(usuario) {
+        if (!usuario || !usuario.ativo) return false;
+        if (usuario.emprestimosAtivos > constants.LIMITE_EMPRESTIMO) return false;
+        if (usuario.multaPendente > constants.LIMITE_MULTA) return false;
+        return true;
     }
-    static validarLivro(livro){
-        if (livro != null && livro.disponivel) {
-            return true;
-            
-        } else {
-            return false;
-        }
+
+    static validarLivro(livro) {
+        if (!livro || !livro.disponivel) return false;
+        return true;
     }
 }
 module.exports = ServicoEmprestimo;
